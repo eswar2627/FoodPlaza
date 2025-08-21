@@ -41,3 +41,52 @@ FoodPlaza/
 ├── requirements.txt    # Project dependencies
 ├── README.md           # Project documentation
 └── ...
+
+Getting Started
+
+Follow these steps to run the project locally:
+
+Prerequisites
+
+Python 3.x
+
+pip (Python package installer)
+
+Git (optional, for cloning)
+
+Setup Instructions:
+
+1. Clone the repository
+
+git clone https://github.com/eswar2627/FoodPlaza.git
+cd FoodPlaza
+
+
+2. Create and activate a virtual environment (recommended)
+
+# On Windows
+python -m venv env
+env\Scripts\activate
+
+# On macOS/Linux
+python3 -m venv env
+source env/bin/activate
+
+3. Install required packages
+
+pip install -r requirements.txt
+
+
+4. Apply database migrations
+
+python manage.py migrate
+
+
+5.Run the development server
+
+python manage.py runserver
+
+
+6.Create Superuser for Admin Panel
+
+python manage.py createsuperuser
