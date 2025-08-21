@@ -42,17 +42,19 @@ FoodPlaza/
 ├── README.md           # Project documentation
 └── ...
 
+
 Getting Started
 
 Follow these steps to run the project locally:
 
-Prerequisites
+1. Prerequisites
 
 Python 3.x
 
 pip (Python package installer)
 
 Git (optional, for cloning)
+
 
 Setup Instructions:
 
