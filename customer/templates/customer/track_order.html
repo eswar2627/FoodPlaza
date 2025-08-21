@@ -1,0 +1,116 @@
+{% extends 'customer/base.html' %}
+{% load static %}
+{% load is_step_active %}
+
+{% block content %}
+{% if order.latitude and order.longitude %}
+  <h5>Delivery Location:</h5>
+  <div id="map" style="height: 400px; width: 100%;"></div>
+
+  <script>
+      function initMap() {
+          const location = {
+              lat: parseFloat("{{ order.latitude }}"),
+              lng: parseFloat("{{ order.longitude }}")
+          };
+          const map = new google.maps.Map(document.getElementById("map"), {
+              zoom: 15,
+              center: location
+          });
+          new google.maps.Marker({
+              position: location,
+              map: map,
+              title: "Delivery Location"
+          });
+      }
+  </script>
+
+  <script async defer
+      src="https://maps.googleapis.com/maps/api/js?AIzaSyB4PR5IC5XKkGy6vXfzTWa5A0Pjjip_FVw&callback=initMap">
+  </script>
+{% else %}
+  <p>Location not available.</p>
+{% endif %}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Track Your Order</h2>
+
+    <div class="timeline">
+        {% for step in steps %}
+            <div class="timeline-step {% if order|is_step_active:step %}active{% endif %}">
+                {{ step }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Live Order Status -->
+    <p class="text-center mt-4">
+        Order Status: <strong id="order-status">{{ order.status }}</strong>
+    </p>
+
+    <p class="text-center">
+        <a href="{% url 'download-invoice' order.id %}" class="btn btn-primary">Download Invoice</a>
+    </p>
+</div>
+
+<style>
+.timeline {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+}
+.timeline-step {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    border-bottom: 3px solid #ccc;
+    position: relative;
+}
+.timeline-step.active {
+    color: green;
+    border-bottom-color: green;
+    font-weight: bold;
+}
+.timeline-step::before {
+    content: "●";
+    position: absolute;
+    left: 50%;
+    top: -10px;
+    transform: translateX(-50%);
+    color: #ccc;
+}
+.timeline-step.active::before {
+    color: green;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const orderId = {{ order.id }};
+    const socket = new WebSocket('ws://' + window.location.host + '/ws/order/' + orderId + '/');
+
+    const stepsOrder = ['Pending', 'Confirmed', 'Preparing', 'Out for Delivery', 'Delivered'];
+
+    socket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        const status = data.status;
+
+        // Update text status
+        document.getElementById("order-status").innerText = status;
+
+        // Update timeline steps
+        const timelineSteps = document.querySelectorAll('.timeline-step');
+
+        const currentIndex = stepsOrder.indexOf(status);
+
+        timelineSteps.forEach((stepElement, index) => {
+            if (index <= currentIndex) {
+                stepElement.classList.add('active');
+            } else {
+                stepElement.classList.remove('active');
+            }
+        });
+    };
+</script>
+{% endblock %}
