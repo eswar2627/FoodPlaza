@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+    <title>Deliver</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet" />
+
+    <!-- Custom inline styles -->
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            position: relative;
+            min-height: 100vh;
+            background-image: url('/static/images/fds.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-size: cover;
+            color: #333;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255, 255, 255, 0.4);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            padding-left: 0;
+        }
+
+        nav li {
+            font-size: 18px;
+            color: #333;
+        }
+
+        nav i {
+            margin-right: 8px;
+            color: #ff6600;
+        }
+
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-custom:hover,
+        .btn-custom:focus {
+            background-color: #0056b3;
+            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-custom:active {
+            background-color: #004085;
+            box-shadow: none;
+        }
+        .food-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .food-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+  body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+  }
+
+  body.dark-mode .card {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border: 1px solid #333;
+  }
+
+  body.dark-mode .btn {
+    background-color: #bb86fc;
+    color: #000;
+    border-color: #bb86fc;
+  }
+
+  body.dark-mode .btn-outline-secondary {
+    background-color: #333;
+    color: #fff;
+    border-color: #555;
+  }
+
+  body.dark-mode a.btn {
+    color: #000;
+  }
+
+  body.dark-mode .text-muted {
+    color: #aaa !important;
+  }
+</style>
+</head>
+<body>
+    {% include 'customer/navigation.html' %}
+
+    {% block content %}
+    {% endblock content %}
+
+    {% include 'customer/footer.html' %}
+
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+    <script>
+  let map;
+  let marker;
+
+  function initMap() {
+    const defaultLocation = { lat: 16.3067, lng: 80.4365 }; // Example: Guntur
+
+    map = new google.maps.Map(document.getElementById("map"), {
+      center: defaultLocation,
+      zoom: 14,
+    });
+
+    map.addListener("click", (e) => {
+      const lat = e.latLng.lat();
+      const lng = e.latLng.lng();
+
+      // Place or move the marker
+      if (marker) {
+        marker.setPosition(e.latLng);
+      } else {
+        marker = new google.maps.Marker({
+          position: e.latLng,
+          map: map,
+        });
+      }
+
+      // Set values to hidden inputs
+      document.getElementById("latitude").value = lat;
+      document.getElementById("longitude").value = lng;
+    });
+  }
+</script>
+
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB4PR5IC5XKkGy6vXfzTWa5A0Pjjip_FVw&callback=initMap">
+</script>
+
+<script>
+  const toggleBtn = document.getElementById('darkModeToggle');
+  const body = document.body;
+
+  // Load saved mode from localStorage
+  if (localStorage.getItem('darkMode') === 'enabled') {
+    body.classList.add('dark-mode');
+    toggleBtn.textContent = "☀️";
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+    if (body.classList.contains('dark-mode')) {
+      localStorage.setItem('darkMode', 'enabled');
+      toggleBtn.textContent = "☀️";
+    } else {
+      localStorage.setItem('darkMode', 'disabled');
+      toggleBtn.textContent = "🌙 ";
+    }
+  });
+</script>
+
+</body>
+</html>
