@@ -1,0 +1,13 @@
+{% extends 'customer/base.html' %}
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center">Choose Payment Method</h2>
+    <p>Order ID: {{ order.pk }}</p>
+    <p>Total Amount: ₹{{ order.price }}</p>
+
+    <form action="{% url 'order-confirmation' order.pk %}" method="get" class="text-center mt-4">
+        <!-- Add Razorpay/UPI buttons here later -->
+        <button type="submit" class="btn btn-success">Proceed to Pay</button>
+    </form>
+</div>
+{% endblock %}
