@@ -1,0 +1,48 @@
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-sm-12 text-center mt-3">
+            <h1>Order Id: {{ order.pk }}</h1>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-12 col-sm-12 mt-5">
+            <h3>Customer Information:</h3>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-sm-12 mt-3">
+            <p><strong>Name:</strong> {{ order.name }}</p>
+            <p><strong>Email:</strong> {{ order.email }}</p>
+            <h5 class="pt-3">Address Information:</h5>
+            <p><strong>Street:</strong> {{ order.street }}</p>
+            <p><strong>City:</strong> {{ order.city }}</p>
+            <p><strong>State:</strong> {{ order.state }}</p>
+            <p><strong>Zip Code:</strong> {{ order.zip_code }}</p>
+        </div>
+
+        <div class="col-md-6 col-sm-12 mt-3">
+            <h5>Payment and Shipping Information</h5>
+
+            {% if order.is_paid %}
+                <p><i style="color: green;" class="fas fa-check"></i> <span class="pl-2">Order Has Been Paid!</span></p>
+            {% else %}
+                <p><i style="color: red;" class="fas fa-times"></i> <span class="pl-2">Order Has Not Been Paid!</span></p>
+            {% endif %}
+
+            {% if order.is_shipped %}
+                <p><i style="color: green;" class="fas fa-check"></i> <span class="pl-2">Order Has Been Shipped!</span></p>
+            {% else %}
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-success mt-2">Mark as Shipped</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}
