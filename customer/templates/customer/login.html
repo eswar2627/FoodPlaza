@@ -1,0 +1,77 @@
+{% extends 'customer/base.html' %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 400px;">
+    <h2 class="mb-4 fw-bold text-center">Login</h2>
+
+    <form id="loginForm" method="POST" novalidate>
+        {% csrf_token %}
+
+        <!-- Preserve "next" parameter -->
+        {% if request.GET.next %}
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
+        {% endif %}
+
+        <div class="mb-3">
+            <label for="id_username" class="form-label fw-bold">Username</label>
+            <input type="text" name="username" id="id_username" placeholder="Enter your username" class="form-control" required>
+            <div class="invalid-feedback">Please enter your username.</div>
+        </div>
+
+        <div class="mb-3 position-relative">
+            <label for="id_password" class="form-label fw-bold">Password</label>
+            <input type="password" name="password" id="id_password" placeholder="Enter your password" class="form-control" required>
+            <span id="togglePassword" style="position: absolute; top: 38px; right: 10px; cursor: pointer;">👁️</span>
+            <div class="invalid-feedback">Please enter your password.</div>
+        </div>
+
+        <p class="mt-2 text-end">
+            <a href="{% url 'password_reset' %}">Forgot password?</a>
+        </p>
+
+        <button type="submit" class="btn btn-primary fw-bold w-100 mt-3">Login</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('loginForm');
+        const username = document.getElementById('id_username');
+        const password = document.getElementById('id_password');
+        const togglePassword = document.getElementById('togglePassword');
+
+        // Show/hide password
+        togglePassword.addEventListener('click', () => {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            togglePassword.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        // Inline form validation
+        form.addEventListener('submit', (e) => {
+            let valid = true;
+
+            if (!username.value.trim()) {
+                username.classList.add('is-invalid');
+                valid = false;
+            } else {
+                username.classList.remove('is-invalid');
+            }
+
+            if (!password.value.trim()) {
+                password.classList.add('is-invalid');
+                valid = false;
+            } else {
+                password.classList.remove('is-invalid');
+            }
+
+            if (!valid) e.preventDefault();
+        });
+
+        // Remove error on input
+        [username, password].forEach(input => {
+            input.addEventListener('input', () => input.classList.remove('is-invalid'));
+        });
+    });
+</script>
+{% endblock %}

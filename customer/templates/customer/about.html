@@ -1,0 +1,39 @@
+{% extends 'customer/base.html' %}
+
+{% block content %}
+<!-- AOS Animation Library -->
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+<div class="container my-5 p-5" style="background-color: rgba(255, 255, 255, 0.85); border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
+  <div class="row align-items-center">
+
+    <!-- Text Section -->
+    <div class="col-md-6" data-aos="fade-right" data-aos-duration="1200">
+      <h2 class="text-center mb-4" style="font-family: 'Playfair Display', serif; font-weight: 600; color: #ff6600;">
+        About Us!
+      </h2>
+      <p class="text-justify" style="font-size: 17px; color: #333;">
+        Welcome to <strong>Food Plaza</strong> — your trusted partner for fast, fresh, and hassle-free food delivery. We understand that in today’s busy world, convenience matters just as much as quality. That’s why we built <strong>Foodie</strong>: to bring your favorite meals from top local restaurants straight to your doorstep with just a few taps.
+      </p>
+      <p class="text-justify" style="font-size: 17px; color: #333;">
+        At Food Plaza, we believe that food is more than just a necessity — it’s an experience. Our platform offers an easy-to-use interface where customers can explore a wide range of dishes, place orders in seconds, and track deliveries in real time. We partner with trusted restaurants, ensure hygiene and safety at every step, and provide flexible payment options including UPI, cards, wallets, and cash on delivery.
+      </p>
+      <p class="text-justify" style="font-size: 17px; color: #333;">
+        What makes Food Plaza different is our commitment to innovation and customer happiness. Whether you’re at home, at work, or on the go, Foodie is always ready to deliver the food you love — fresh, fast, and on time!
+      </p>
+    </div>
+
+    <!-- Image Section -->
+    <div class="col-md-6 text-center" data-aos="zoom-in" data-aos-duration="1200">
+      <img src="/static/images/fds.jpg" alt="Delivery Guy" class="img-fluid"
+        style="max-width: 80%; border-radius: 15px; box-shadow: 0 6px 20px rgba(0,0,0,0.2);">
+    </div>
+  </div>
+</div>
+
+<!-- AOS Script -->
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init();
+</script>
+{% endblock content %}

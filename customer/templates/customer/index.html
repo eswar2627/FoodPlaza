@@ -1,0 +1,43 @@
+{% extends 'customer/base.html' %}
+{% block content %}
+
+<div class="container text-center mt-5">
+  <h1>Online Food Delivery Service 🍔</h1>
+  <p class="lead">Click below to place your order!</p>
+  <a href="{% url 'order' %}" class="btn btn-outline-primary btn-lg mt-3">Order Now</a>
+</div>
+
+<!-- Offer Modal -->
+<div class="modal fade" id="offerModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center p-4">
+      <h3>🎁 Special Offer!</h3>
+      <p>Get <b>10% OFF</b> on your first order!</p>
+      <button id="grabOfferBtn" class="btn btn-success mt-2">Grab Now</button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Show offer popup after 2 seconds
+  setTimeout(() => {
+    const modal = new bootstrap.Modal(document.getElementById('offerModal'));
+    modal.show();
+  }, 2000);
+
+  // Handle "Grab Offer" button click
+  const grabBtn = document.getElementById('grabOfferBtn');
+  grabBtn.addEventListener('click', () => {
+    // Close modal
+    const offerModal = bootstrap.Modal.getInstance(document.getElementById('offerModal'));
+    offerModal.hide();
+
+    // Store discount in browser
+    localStorage.setItem('discount', '10');
+    alert('🎉 10% discount applied! Proceed to your order page.');
+  });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,109 @@
+```html
+{% extends 'customer/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #fff;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  h1 {
+    font-weight: 700;
+    color: #ff5200;
+  }
+
+  .search-bar input {
+    border-radius: 50px;
+    padding: 10px 20px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid #ddd;
+  }
+
+  .food-card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background-color: #fff;
+  }
+
+  .food-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .food-card img {
+    height: 200px;
+    object-fit: cover;
+  }
+
+  .food-card .card-body {
+    padding: 20px;
+  }
+
+  .price {
+    color: #ff5200;
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+
+  .btn-order {
+    background-color: #ff5200;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    transition: 0.3s;
+  }
+
+  .btn-order:hover {
+    background-color: #e14700;
+  }
+</style>
+
+<div class="container my-5">
+
+  <!-- Heading -->
+  <div class="text-center mb-5">
+    <h1>What's On Our Menu?</h1>
+    <p class="text-muted">Delicious dishes made with love. Explore now!</p>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="row justify-content-center mb-5">
+    <div class="col-md-8 col-sm-12">
+      <form method="GET" action="{% url 'menu-search' %}">
+        <div class="search-bar">
+          <input class="form-control" name="q" type="text" placeholder="Search our menu..." value="{{ request.GET.q }}">
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Menu Items -->
+  <div class="row">
+    {% for item in menu_items %}
+    <div class="col-12 col-sm-6 col-md-4 mb-4">
+      <div class="card food-card">
+        <img src="{{ item.image.url }}" alt="{{ item.name }}">
+        <div class="card-body text-center">
+          <h5 class="card-title">{{ item.name }}</h5>
+          <p class="text-muted">{{ item.description|truncatewords:15 }}</p>
+          <p class="price">₹{{ item.price }}</p>
+          <a href="{% if user.is_authenticated %}{% url 'order' %}{% else %}{% url 'login' %}?next={% url 'order' %}{% endif %}" class="btn btn-order">
+            <i class="fas fa-shopping-cart me-2"></i>Order Now
+          </a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center">
+      <p class="text-muted">No menu items found.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock content %}
+```

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Track Your Order</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; color: #333; }
+  h2 { text-align: center; margin-bottom: 20px; }
+  .timeline { display: flex; justify-content: space-between; margin-top: 40px; position: relative; }
+  .timeline::after { content: ''; position: absolute; top: 15px; left: 5%; width: 90%; height: 3px; background: #ccc; z-index: 0; }
+  .timeline-step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .timeline-step .circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ccc;
+    margin: auto;
+    margin-bottom: 5px;
+    transition: all 0.3s ease;
+  }
+  .timeline-step.active .circle {
+    background: green;
+  }
+  .timeline-step.active span {
+    font-weight: bold;
+    color: green;
+  }
+  #order-status { font-size: 1.2em; font-weight: bold; color: #333; }
+  #map { width: 100%; height: 400px; margin-top: 20px; border-radius: 10px; }
+  .btn-primary { display: block; margin: 20px auto; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+</style>
+</head>
+<body>
+
+<h2>Track Your Order</h2>
+
+<div id="map-container"></div>
+
+<div class="timeline" id="timeline"></div>
+
+<p class="text-center mt-4" style="text-align:center; margin-top:30px;">
+  Order Status: <span id="order-status">Pending</span>
+</p>
+
+<script>
+  // -----------------------
+  // Dynamic order data
+  // -----------------------
+  const ORDER = {
+      id: 12345,
+      status: 'Pending',
+      latitude: 17.442,    // Replace with actual values or null
+      longitude: 78.380,   // Replace with actual values or null
+      steps: ['Pending', 'Confirmed', 'Preparing', 'Out for Delivery', 'Delivered'],
+      invoice_url: '/download-invoice/12345/'
+  };
+
+  // -----------------------
+  // Google Map
+  // -----------------------
+  function initMap() {
+      if (ORDER.latitude && ORDER.longitude) {
+          const location = { lat: ORDER.latitude, lng: ORDER.longitude };
+          const map = new google.maps.Map(document.getElementById("map"), {
+              zoom: 15,
+              center: location
+          });
+          new google.maps.Marker({
+              position: location,
+              map: map,
+              title: "Delivery Location"
+          });
+      } else {
+          document.getElementById('map-container').innerHTML = '<p style="text-align:center;">Location not available.</p>';
+      }
+  }
+
+  if (ORDER.latitude && ORDER.longitude) {
+      const mapDiv = document.createElement('div');
+      mapDiv.id = 'map';
+      document.getElementById('map-container').appendChild(mapDiv);
+
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyB4PR5IC5XKkGy6vXfzTWa5A0Pjjip_FVw&callback=initMap`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+  } else {
+      document.getElementById('map-container').innerHTML = '<p style="text-align:center;">Location not available.</p>';
+  }
+
+  // -----------------------
+  // Timeline
+  // -----------------------
+  const timelineContainer = document.getElementById('timeline');
+
+  ORDER.steps.forEach(step => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'timeline-step';
+      stepDiv.innerHTML = `<div class="circle"></div><span>${step}</span>`;
+      timelineContainer.appendChild(stepDiv);
+  });
+
+  function updateTimeline(status) {
+      const steps = document.querySelectorAll('.timeline-step');
+      const index = ORDER.steps.indexOf(status);
+      steps.forEach((stepEl, i) => {
+          if (i <= index) stepEl.classList.add('active');
+          else stepEl.classList.remove('active');
+      });
+      document.getElementById('order-status').innerText = status;
+  }
+
+  updateTimeline(ORDER.status);
+
+  // -----------------------
+  // Live WebSocket
+  // -----------------------
+  const socket = new WebSocket(`ws://${window.location.host}/ws/order/${ORDER.id}/`);
+
+  socket.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      if (data.status) {
+          updateTimeline(data.status);
+      }
+  };
+
+  socket.onopen = () => console.log('WebSocket connected');
+  socket.onclose = () => console.log('WebSocket disconnected');
+
+
+</script>
+
+</body>
+</html>
